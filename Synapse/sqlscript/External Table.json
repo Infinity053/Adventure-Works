@@ -1,0 +1,17 @@
+{
+	"name": "External Table",
+	"properties": {
+		"content": {
+			"query": "CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'Js@81051';\n\nCREATE DATABASE SCOPED CREDENTIAL cred_ab\nWITH IDENTITY = 'Managed Identity';\n\nCREATE EXTERNAL DATA SOURCE silver_source\nWITH\n(\n    LOCATION = 'https://abprojectlake.blob.core.windows.net/silver',\n    CREDENTIAL = cred_ab\n\n);\n\nCREATE EXTERNAL DATA SOURCE source_gold\nWITH\n(\n    LOCATION = 'https://abprojectlake.blob.core.windows.net/gold',\n    CREDENTIAL = cred_ab\n);\n\nCREATE EXTERNAL FILE FORMAT parquet_format\nWITH\n(\n    FORMAT_TYPE = PARQUET,\n    DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec'\n);\n\n------------------------------------------------------------------------\n\nCREATE EXTERNAL TABLE gold.ext_sales\nWITH\n(\n    LOCATION = 'ext_sales',\n    DATA_SOURCE = source_gold,\n    FILE_FORMAT = parquet_format\n)\nAS\nSELECT * FROM gold.sales_V;\n\nSELECT * FROM gold.ext_sales;\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "ABProject_DB",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
